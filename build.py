@@ -180,6 +180,18 @@ def create_workflow():
             # Add info.plist
             zipf.writestr('info.plist', info_plist)
             print("   ✅ Added info.plist")
+            
+            # Add icon if exists
+            icon_path = os.path.join(SRC_DIR, 'icon.png')
+            if os.path.exists(icon_path):
+                zipf.write(icon_path, 'icon.png')
+                print("   ✅ Added icon.png")
+            
+            # Add item icon if exists
+            icon_item_path = os.path.join(SRC_DIR, 'icon_item.png')
+            if os.path.exists(icon_item_path):
+                zipf.write(icon_item_path, 'icon_item.png')
+                print("   ✅ Added icon_item.png")
     
         print("")
         print("✅ Workflow created successfully!")
