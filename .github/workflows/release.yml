@@ -1,42 +1,35 @@
-name: Build and Release
+name: Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # 当推送 v 开头的 tag 时触发，如 v1.0.0, v1.1.0
 
 jobs:
-  build:
-    runs-on: macos-latest
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-    
-    - name: Build workflow
-      run: python3 build.py
-    
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Allow-Blocked-Apps.alfredworkflow
-        asset_name: Allow-Blocked-Apps.alfredworkflow
-        asset_content_type: application/zip
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Allow-Blocked-Apps.alfredworkflow
+          generate_release_notes: true
+          body: |
+            ## 📦 安装方法
+
+            1. 下载下方的 `Allow-Blocked-Apps.alfredworkflow` 文件
+            2. 双击文件进行安装
+            3. 在 Alfred 中输入 `allow` 即可使用
+
+            ## 💻 系统要求
+
+            - macOS 10.15 (Catalina) 或更高版本
+            - Alfred 4+ (需要 Powerpack)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
